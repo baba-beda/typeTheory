@@ -2,6 +2,7 @@
 
     package parser;
     import expression.*;
+    import pattern.*;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -14,6 +15,18 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * of the available methods.
  */
 public class LambdaBaseListener implements LambdaListener {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCondition(LambdaParser.ConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCondition(LambdaParser.ConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -50,6 +63,30 @@ public class LambdaBaseListener implements LambdaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAtom(LambdaParser.AtomContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNumeral(LambdaParser.NumeralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumeral(LambdaParser.NumeralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunction(LambdaParser.FunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunction(LambdaParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

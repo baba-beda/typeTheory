@@ -2,6 +2,7 @@
 
     package parser;
     import expression.*;
+    import pattern.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -13,6 +14,12 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * operations with no return type.
  */
 public interface LambdaVisitor<T> extends ParseTreeVisitor<T> {
+	/**
+	 * Visit a parse tree produced by {@link LambdaParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCondition(LambdaParser.ConditionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LambdaParser#expression}.
 	 * @param ctx the parse tree
@@ -31,6 +38,18 @@ public interface LambdaVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAtom(LambdaParser.AtomContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LambdaParser#numeral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNumeral(LambdaParser.NumeralContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LambdaParser#function}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction(LambdaParser.FunctionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LambdaParser#variable}.
 	 * @param ctx the parse tree
