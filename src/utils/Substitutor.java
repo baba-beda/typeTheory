@@ -7,7 +7,6 @@ import expression.*;
  */
 public class Substitutor {
     public static Expression substitute(Condition condition) {
-
         return substitute(condition.getMainExpression(), condition.getVar(), condition.getSubstituteExpression());
     }
 

@@ -1,11 +1,5 @@
 import expression.Expression;
-import pattern.IsZero;
-import pattern.Numeral;
-import pattern.Pred;
-import pattern.Succ;
-import utils.Parser;
-import utils.PatternFinder;
-import utils.Reductor;
+import utils.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,8 +15,6 @@ public class Task4 {
              PrintWriter out = new PrintWriter("task4.out")) {
             Expression toNormalize = Parser.getParsedExpression(in.nextLine());
             System.out.println("Input expression: " + toNormalize);
-            /*Expression preparedToReduce = PatternFinder.findPatterns(toNormalize);
-            System.out.println("Some patterns found: " + preparedToReduce);*/
             long start = System.currentTimeMillis();
             Expression prevReduct = toNormalize;
             Expression reduct = Reductor.reduce(toNormalize);

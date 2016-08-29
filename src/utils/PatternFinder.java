@@ -6,8 +6,6 @@ import expression.LambdaExpression;
 import expression.Variable;
 import pattern.*;
 
-import java.util.AbstractCollection;
-
 /**
  * Created by baba_beda on 8/28/16.
  */
@@ -43,7 +41,7 @@ public class PatternFinder {
             return new IsZero(expression);
         }
         if (Numeral.isNumeral(expression)) {
-            return new Numeral((LambdaExpression) expression);
+            return new Numeral(expression);
         }
         if (Pred.isPred(expression)) {
             return new Pred(expression);
