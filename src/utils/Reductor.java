@@ -1,29 +1,34 @@
 package utils;
 
-import expression.*;
-import pattern.*;
+import expression.db_expression.*;
 
 /**
  * Created by baba_beda on 8/27/16.
  */
 public class Reductor {
-    public static Expression reduce(Expression expression) {
-        if (expression instanceof Variable) {
-            return expression;
+    public static DBExpression reduce(DBExpression dbExpression) {
+        if (dbExpression instanceof DBVariable) {
+            return dbExpression;
         }
-        if (expression instanceof LambdaExpression) {
-            return new LambdaExpression(((LambdaExpression) expression).getVar(), reduce(((LambdaExpression) expression).getInside()));
+        if (dbExpression instanceof DBLambdaExpression) {
+            return new DBLambdaExpression(reduce(((DBLambdaExpression) dbExpression).getInside()));
         }
-        if (expression instanceof Application) {
-            return apply(((Application) expression).getLeft(), ((Application) expression).getRight());
+        if (dbExpression instanceof DBApplication) {
+            return apply(((DBApplication) dbExpression).getLeft(), ((DBApplication) dbExpression).getRight());
         }
-        return expression;
+        return dbExpression;
     }
 
-    private static Expression apply(Expression e1, Expression e2) {
-        if (e1 instanceof LambdaExpression) {
-            return Substitutor.substitute(new Condition(((LambdaExpression) e1).getInside(), ((LambdaExpression) e1).getVar(), e2));
+    private static DBExpression apply(DBExpression e1, DBExpression e2) {
+        if (e1 instanceof DBLambdaExpression) {
+            return Substitutor.shift(-1, 0, Substitutor.substituteDB(Substitutor.shift(1, 0, e2), new DBVariable(0), ((DBLambdaExpression) e1).getInside()));
         }
-        return new Application(reduce(e1), reduce(e2));
+        DBExpression leftRed = reduce(e1);
+        if (e1.equals(leftRed)) {
+            return new DBApplication(e1, reduce(e2));
+        }
+        else {
+            return new DBApplication(leftRed, e2);
+        }
     }
 }

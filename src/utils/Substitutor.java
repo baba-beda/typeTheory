@@ -1,6 +1,10 @@
 package utils;
 
 import expression.*;
+import expression.db_expression.DBApplication;
+import expression.db_expression.DBExpression;
+import expression.db_expression.DBLambdaExpression;
+import expression.db_expression.DBVariable;
 
 /**
  * Created by baba_beda on 8/25/16.
@@ -34,7 +38,6 @@ public class Substitutor {
     }
 
     private static Expression substitute(Expression curExpr, Variable var, Expression substituteExpr) {
-
         if (curExpr instanceof Variable) {
             if (curExpr.equals(var)) {
                 return substituteExpr;
@@ -47,9 +50,17 @@ public class Substitutor {
             return new Application(substitute(((Application) curExpr).getLeft(), var, substituteExpr), substitute(((Application) curExpr).getRight(), var, substituteExpr));
         }
         if (curExpr instanceof LambdaExpression) {
-            if (!((LambdaExpression) curExpr).getVar().equals(var)
-                    && !substituteExpr.getFreeVariables().contains(((LambdaExpression) curExpr).getVar())) {
+            if (((LambdaExpression) curExpr).getVar().equals(var)) {
+                return curExpr;
+            }
+            if (!substituteExpr.getFreeVariables().contains(((LambdaExpression) curExpr).getVar()) || !((LambdaExpression) curExpr).getInside().getFreeVariables().contains(var)) {
                 return new LambdaExpression(((LambdaExpression) curExpr).getVar(), substitute(((LambdaExpression) curExpr).getInside(), var, substituteExpr));
+            }
+            if (substituteExpr.getFreeVariables().contains(((LambdaExpression) curExpr).getVar()) && ((LambdaExpression) curExpr).getInside().getFreeVariables().contains(var)) {
+                Variable newVar = getModifiedVariable(((LambdaExpression) curExpr).getVar());
+                Expression inside = substitute(((LambdaExpression) curExpr).getInside(), ((LambdaExpression) curExpr).getVar(), newVar);
+                inside = substitute(inside, var, substituteExpr);
+                return new LambdaExpression(newVar, inside);
             }
         }
         return curExpr;
@@ -76,5 +87,36 @@ public class Substitutor {
             exprStr = exprStr.replace(v.toString(), getModifiedVariable(v).toString());
         }
         return Parser.getParsedExpression(exprStr);
+    }
+
+    static DBExpression substituteDB(DBExpression subs, DBVariable v, DBExpression source) {
+        if (source instanceof DBApplication) {
+            return new DBApplication(substituteDB(subs, v, ((DBApplication) source).getLeft()), substituteDB(subs, v, ((DBApplication) source).getRight()));
+        }
+        if (source instanceof DBLambdaExpression) {
+            return new DBLambdaExpression(substituteDB(shift(1, 0, subs), new DBVariable(v.getIndex() + 1), ((DBLambdaExpression) source).getInside()));
+        }
+        if (source instanceof DBVariable && source.equals(v)) {
+            return subs;
+        }
+        return source;
+    }
+
+    static DBExpression shift(int d, int c, DBExpression dbExpression) {
+        if (dbExpression instanceof DBVariable) {
+            if (((DBVariable) dbExpression).getIndex() < c) {
+                return dbExpression;
+            }
+            else {
+                return new DBVariable(((DBVariable) dbExpression).getIndex() + d);
+            }
+        }
+        if (dbExpression instanceof DBLambdaExpression) {
+            return new DBLambdaExpression(shift(d, c + 1, ((DBLambdaExpression) dbExpression).getInside()));
+        }
+        if (dbExpression instanceof DBApplication) {
+            return new DBApplication(shift(d, c, ((DBApplication) dbExpression).getLeft()), shift(d, c, ((DBApplication) dbExpression).getRight()));
+        }
+        return dbExpression;
     }
 }
